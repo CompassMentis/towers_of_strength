@@ -15,9 +15,6 @@ Towers of Strength game for PyWeek 28
 * Tiles shown
 
 # In progress
-* Find images (isometric) - runners/cyclists, bystanders, marshalls, etc
-    - e.g. from https://kenney.nl/assets
-* Create finish tile
 * Calculate route from tiles, assume simple scenario:
     - Path doesn't cross
     - Start with 'SPN' (spawn) tile
@@ -31,6 +28,8 @@ Towers of Strength game for PyWeek 28
 * Sketch an interface, with the following components:
     - Tiles (as currently generated)
     - A few 'towers' to place (e.g. a bystander and a marshall)
+* Find images (isometric) of 'towers': bystanders, marshalls, etc
+    - e.g. from https://kenney.nl/assets
 * Show towers on the screen (not on the tiles, just ready to be dragged)
 * Drag and drop towers
     - Note: allow for multiple types of towers

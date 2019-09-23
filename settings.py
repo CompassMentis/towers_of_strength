@@ -10,3 +10,5 @@ class Settings:
 
     tiles_offset_x = 200
     tiles_offset_y = 300
+
+    runner_size = (69, 83)

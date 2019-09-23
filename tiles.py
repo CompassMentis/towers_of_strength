@@ -4,13 +4,22 @@ from settings import Settings
 
 
 class Tile:
-    def __init__(self, filename):
+    def __init__(self, code, filename):
+        self.code = code
+        self.filename = filename
         self.raw_image = pygame.image.load(f'images/tiles/{filename}.png')
         self.image = pygame.transform.scale(
             self.raw_image,
             # pygame.transform.rotate(self.raw_image, -45),
             Settings.tile_size
         )
+
+    @property
+    def is_path(self):
+        for x in ['corner', 'straight', 'crossing']:
+            if x in self.filename:
+                return True
+        return False
 
 
 def load_tiles():
@@ -26,12 +35,12 @@ def load_tiles():
         'NESW': 'tile_crossing_E',
 
         # TODO: Create base/finish tile
-        'BS': 'tile_E',
+        'BS': 'tile_finish',
     }
     tiles = dict()
     for codes, filename in sources.items():
-        tile = Tile(filename)
         for code in codes.split('/'):
-            tiles[code] = tile
+            # A bit wasteful - we're loading the same image multiple times
+            tiles[code] = Tile(code, filename)
     return tiles
 

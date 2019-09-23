@@ -1,4 +1,5 @@
 from settings import Settings
+import utils
 
 
 class Space:
@@ -7,34 +8,26 @@ class Space:
         self.y = y
         self.tile = tile
         self.canvas = canvas
-        self.location = self.calculate_location()
+        # self.location = self.calculate_location()
+        self.location = utils.cell_to_isometric((x, y))
 
-    def calculate_location(self):
-        """
-        The whole grid is rotated clockwise by 45 degrees
+    def __repr__(self):
+        return f'<Space>(x={self.x}, y={self.y})'
 
-        Multiply by cell size
-        x2 = x * cell_width
-        y2 = y * cell_height
+    @property
+    def start_space(self):
+        return self.tile.code == 'SPN'
 
-        Top left hand corner of cell (0, 0), i.e. pre-rotated coordinate (0, 0)
-        is the rotation point
-
-        For 45 degrees this means:
-
-        x'' = x2/2 - y2/2
-        y'' = y2/2 - x2/2
-        """
-
-        x2 = self.x * Settings.cell_width
-        y2 = self.y * Settings.cell_height
-
-        # Not sure why, but the factors needed a bit tweaking to match up the tiles correctly
-        return x2 * 0.55 + y2 * 0.55 + Settings.tiles_offset_x, \
-               x2 * -0.45 + y2 * 0.45 + Settings.tiles_offset_y
+    @property
+    def is_path(self):
+        return self.tile.is_path
 
     def draw(self):
         self.canvas.blit(self.tile.image, self.location)
+
+    @property
+    def cell(self):
+        return self.x, self.y
 
 
 def create_spaces(level, tiles, canvas):
