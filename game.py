@@ -3,6 +3,7 @@ import pygame
 from tiles import load_tiles
 from spaces import create_spaces
 from runners import Runner
+from towers import BystanderTower, MarshallTower
 
 
 class Game:
@@ -18,6 +19,11 @@ class Game:
         self.route = self.calculate_route()
         print(self.route)
         self.runners = [Runner(self)]
+        self.towers = [
+            # TODO Tower locations hard-coded - load from file?
+            BystanderTower((1,1), self),
+            MarshallTower((1, 80), self),
+        ]
 
     def calculate_grid_size(self):
         max_x, max_y = 0, 0
@@ -36,6 +42,9 @@ class Game:
 
         for runner in self.runners:
             runner.draw()
+
+        for tower in self.towers:
+            tower.draw()
 
         pygame.display.flip()
 
