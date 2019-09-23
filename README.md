@@ -14,17 +14,7 @@ Towers of Strength game for PyWeek 28
 * Level loaded from csv file
 * Tiles shown
 
-# In progress
-* Calculate route from tiles, assume simple scenario:
-    - Path doesn't cross
-    - Start with 'SPN' (spawn) tile
-    - Find neighbour which is not 'T' and not already found and add to list
-    - Repeat with neighbour
-    - return the list
-* From route, calculate a path, starting simple
-    - A straight line through the centre
-    - Or two half-length straight lines meeting in the centre for corner pieces
-* Move an image (e.g. a runner) along the route, start to finish
+# In progress - core functionality
 * Sketch an interface, with the following components:
     - Tiles (as currently generated)
     - A few 'towers' to place (e.g. a bystander and a marshall)
@@ -38,3 +28,39 @@ Towers of Strength game for PyWeek 28
     - When centre of tower base (roughly calculated/hand coded) is above a tile, highlight the tile (e.g. by drawing a rotated square around it)
     - When releasing tower, place on current tile
     - Drawing code to show placed towers
+* Get towers to do something useful
+    - Give runner(s) stats: happiness (0 to 5), energy (0 to 10), hydration (0 to 10)
+    - Let stats drop over time
+    - (for now) when too low, runner disappears, print out the reason to the console
+    - If a runner nearby, 'help' it
+        - Supporter: increase happiness (up to 10)
+        - Water stand: increase hydration (up to 10)
+        - Food stand: increase food (up to 10)
+
+# Improvements
+* Improve route calculation:
+    - Find 'SPN' tile
+    - Work out which edge it's on, this gives the exit compass-direction for that tile
+    - Repeat until on finish tile:
+        - use exit to work out next tile
+        - flip exit to get entry (N <--> S or E <--> W)
+        - use code and entry to work out next exit compass-direction
+* Improve route following and movement:
+    - Smaller steps
+    - Around the corner in a curve
+    - Change runner image depending on the direction of travel
+    - Animate runner - using multiple images
+    - And make sure the current loop is completed before changing the orientation to avoid 'jitter'
+* Spawn multiple runners
+    - Initially at regular intervals
+* Different types of runners
+    - Use different images
+* Show status of runners
+    - low-energy icon (find one) when below threshold (put in settings, let's try 3)
+    - low-water icon (find one) when below threshold (put in settings, let's try 3
+    - unhappy, neutral, happy face - 1/2, 3, 4/5 (note: 0 means they leave, so no face required for this) 
+* Improve tower-effects
+    - Handle multiple runners
+        - Work out which runners are next to which towers
+        - Try to get each tower to serve a runner (could be an interesting algorithm)
+ 
