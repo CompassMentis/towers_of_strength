@@ -2,10 +2,11 @@ from settings import Settings
 
 
 class Space:
-    def __init__(self, x, y, tile):
+    def __init__(self, x, y, tile, canvas):
         self.x = x
         self.y = y
         self.tile = tile
+        self.canvas = canvas
         self.location = self.calculate_location()
 
     def calculate_location(self):
@@ -28,10 +29,15 @@ class Space:
         x2 = self.x * Settings.cell_width
         y2 = self.y * Settings.cell_height
 
-        return x2 / 2 - y2 / 2, y2 / 2 - x2 / 2
+        # Not sure why, but the factors needed a bit tweaking to match up the tiles correctly
+        return x2 * 0.55 + y2 * 0.55 + Settings.tiles_offset_x, \
+               x2 * -0.45 + y2 * 0.45 + Settings.tiles_offset_y
+
+    def draw(self):
+        self.canvas.blit(self.tile.image, self.location)
 
 
-def create_spaces(level, tiles):
+def create_spaces(level, tiles, canvas):
     # We're reading a csv file, but the format is so simple
     # that we don't really need python's csv library
     with open(f'levels/{level}.csv') as input_file:
@@ -42,5 +48,5 @@ def create_spaces(level, tiles):
     for row, line in enumerate(lines):
         for column, tile_code in enumerate(line.split(',')):
             tile_code = tile_code.strip()   # Remove EOL character
-            result[(column, row)] = Space(column, row, tiles[tile_code])
+            result[(column, row)] = Space(column, row, tiles[tile_code], canvas)
     return result

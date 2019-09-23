@@ -7,8 +7,9 @@ class Tile:
     def __init__(self, filename):
         self.raw_image = pygame.image.load(f'images/tiles/{filename}.png')
         self.image = pygame.transform.scale(
-            pygame.transform.rotate(self.raw_image, 45),
-            Settings.rotated_tile_size
+            self.raw_image,
+            # pygame.transform.rotate(self.raw_image, -45),
+            Settings.tile_size
         )
 
 
