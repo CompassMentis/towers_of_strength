@@ -23,7 +23,7 @@ class Space:
         return self.tile.is_path
 
     def draw(self):
-        self.canvas.blit(self.tile.image, self.location)
+        self.canvas.blit(self.tile.image, (self.location[0], self.location[1] + self.tile.v_offset))
 
     @property
     def cell(self):

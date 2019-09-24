@@ -8,8 +8,7 @@ class Runner:
     def __init__(self, game):
         # TODO: Multiple runners, moving runners etc
         self.game = game
-        self.raw_image = pygame.image.load('images/runners/runner.png')
-        self.image = pygame.transform.scale(self.raw_image, Settings.runner_size)
+        self.image = pygame.image.load('images/runners/runner01.png')
 
         self.route = self.game.route[:]
         self.location = None

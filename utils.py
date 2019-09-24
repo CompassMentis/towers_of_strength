@@ -26,5 +26,5 @@ def cell_to_isometric(cell):
 def location_to_isometric(location):
     x2, y2 = location
     # Not sure why, but the factors needed a bit tweaking to match up the tiles correctly
-    return x2 * 0.55 + y2 * 0.55 + Settings.tiles_offset_x, \
-           x2 * -0.45 + y2 * 0.45 + Settings.tiles_offset_y
+    return x2 * 0.666 + y2 * 0.666 + Settings.tiles_offset_x, \
+           x2 * -0.333 + y2 * 0.333 + Settings.tiles_offset_y
