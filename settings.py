@@ -12,3 +12,6 @@ class Settings:
     tiles_offset_y = 300
 
     runner_size = (69, 83)
+
+    tower_bystander_size = (70, 70)
+    tower_marshall_size = (70, 70)
