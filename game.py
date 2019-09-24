@@ -54,10 +54,9 @@ class Game:
                 return space
 
     def neighbours(self, x, y):
-        for i in range(x - 1, x + 2):
-            for j in range(y - 1, y + 2):
-                if 0 <= i < self.grid_size[0] and 0 <= j < self.grid_size[1]:
-                    yield i, j
+        for i, j in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
+            if 0 <= i < self.grid_size[0] and 0 <= j < self.grid_size[1]:
+                yield i, j
 
     def find_next_path_space(self, space, route):
         x, y = space.x, space.y
