@@ -18,7 +18,7 @@ class Runner:
         self.game.canvas.blit(self.image, self.location)
 
     def set_location(self):
-        self.location = utils.cell_to_isometric(self.route[0].cell)
+        self.location = utils.cell_to_isometric((self.route[0].x, self.route[0].y))
 
         # TODO: Calcate offset and/or put in Settings
         self.location = self.location[0] + 20, self.location[1] - 10
@@ -27,4 +27,5 @@ class Runner:
         if not self.route:
             return
         del self.route[0]
-        self.set_location()
+        if self.route:
+            self.set_location()

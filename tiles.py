@@ -1,5 +1,4 @@
 import pygame
-import glob
 
 from settings import Settings
 
@@ -13,10 +12,15 @@ class Tile:
 
     @property
     def is_path(self):
+        if self.code == 'BS':
+            return True
         for x in ['corner', 'straight', 'crossing']:
             if x in self.filename:
                 return True
         return False
+
+    def __repr__(self):
+        return f'<Tile>(code={self.code}, filename={self.filename})'
 
 
 def load_tiles():

@@ -4,6 +4,7 @@ from tiles import load_tiles
 from spaces import create_spaces
 from runners import Runner
 from towers import BystanderTower, MarshallTower
+from steps import Step
 
 
 class Game:
@@ -17,7 +18,6 @@ class Game:
         self.grid_size = self.calculate_grid_size()
         self.start_space = self.find_start_space()
         self.route = self.calculate_route()
-        print(self.route)
         self.runners = [Runner(self)]
         self.towers = [
             # TODO Tower locations hard-coded - load from file?
@@ -58,19 +58,61 @@ class Game:
             if 0 <= i < self.grid_size[0] and 0 <= j < self.grid_size[1]:
                 yield i, j
 
-    def find_next_path_space(self, space, route):
+    def find_neighbour_path(self, space):
         x, y = space.x, space.y
         for i, j in self.neighbours(x, y):
-            if self.spaces[(i, j)] not in route and self.spaces[(i, j)].is_path:
+            if self.spaces[(i, j)].is_path:
                 return self.spaces[(i, j)]
         return None
 
+    def find_next_step(self, step):
+        if self.spaces[(step.x, step.y)].end_space:
+            return None
+
+        delta = {
+            'E': (1, 0),
+            'S': (0, 1),
+            'W': (-1, 0),
+            'N': (0, -1)
+        }[step.exit_side]
+        next_x, next_y = step.x + delta[0], step.y + delta[1]
+        next_tile = self.spaces[(next_x, next_y)].tile
+        assert next_tile.is_path
+
+        next_entry_side = {
+            'E': 'W',
+            'W': 'E',
+            'N': 'S',
+            'S': 'N'
+        }[step.exit_side]
+
+        if next_tile.code in ['NESW', 'NS', 'SN', 'EW', 'WE']:
+            # Can move in a straight line
+            next_exit_side = step.exit_side
+        else:
+            # Take code (consisting in entry + exit side, but may be in wrong order)
+            # remove the entry side, to be left with the exit side
+            next_exit_side = [c for c in next_tile.code if c is not next_entry_side][0]
+
+        return Step(next_x, next_y, next_entry_side, next_exit_side)
+
     def calculate_route(self):
         route = []
-        current = self.start_space
-        while current is not None:
-            route.append(current)
-            current = self.find_next_path_space(current, route)
+        start_space = self.start_space
+        next_space = self.find_neighbour_path(start_space)
+        delta_to_next = (next_space.x - start_space.x, next_space.y - start_space.y)
+        exit_side = {
+            (1, 0): 'E',
+            (0, 1): 'S',
+            (-1, 0): 'W',
+            (0, -1): 'N'
+        }[delta_to_next]
+
+        step = Step(x=start_space.x, y=start_space.y, entry_side=None, exit_side=exit_side)
+
+        while step is not None:
+            route.append(step)
+            step = self.find_next_step(step)
 
         return route
 

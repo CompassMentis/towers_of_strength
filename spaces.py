@@ -19,6 +19,10 @@ class Space:
         return self.tile.code == 'SPN'
 
     @property
+    def end_space(self):
+        return self.tile.code == 'BS'
+
+    @property
     def is_path(self):
         return self.tile.is_path
 
