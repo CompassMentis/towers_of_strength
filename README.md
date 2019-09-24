@@ -64,3 +64,5 @@ Towers of Strength game for PyWeek 28
         - Work out which runners are next to which towers
         - Try to get each tower to serve a runner (could be an interesting algorithm)
  
+ * To add:  The better a runner's stats are, the faster they'll go - so a nice way to see who's getting low. That could give a player two different aims: trying to achieve the faster time and/or to get as many runners over the finish line as possible
+ 
