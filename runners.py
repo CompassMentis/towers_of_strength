@@ -1,6 +1,5 @@
 import pygame
 
-from settings import Settings
 import utils
 
 
@@ -12,6 +11,9 @@ class Runner:
 
         self.route = self.game.route[:]
         self.location = None
+        self.happiness = 3
+        self.hydration = 6
+        self.energy = 6
         self.set_location()
 
     def draw(self):

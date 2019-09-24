@@ -38,13 +38,6 @@ Towers of Strength game for PyWeek 28
         - Food stand: increase food (up to 10)
 
 # Improvements
-* Improve route calculation:
-    - Find 'SPN' tile
-    - Work out which edge it's on, this gives the exit compass-direction for that tile
-    - Repeat until on finish tile:
-        - use exit to work out next tile
-        - flip exit to get entry (N <--> S or E <--> W)
-        - use code and entry to work out next exit compass-direction
 * Improve route following and movement:
     - Smaller steps
     - Around the corner in a curve
