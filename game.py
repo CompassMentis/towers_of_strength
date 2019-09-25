@@ -1,4 +1,6 @@
 import pygame
+import random
+from spritesheet import SpriteSheet
 
 from tiles import load_tiles
 from spaces import create_spaces
@@ -18,7 +20,16 @@ class Game:
         self.grid_size = self.calculate_grid_size()
         self.start_space = self.find_start_space()
         self.route = self.calculate_route()
+        self.spritesheets = [
+            SpriteSheet(
+                f'images/runners/{name}_animated.png',
+                columns=32, rows=8,
+                colour_key=pygame.Color(127, 127, 127)
+            )
+            for name in ['hero', 'heroine']
+        ]
         self.runners = [Runner(self)]
+
         self.towers = [
             # TODO Tower locations hard-coded - load from file?
             BystanderTower((1,1), self),
@@ -117,5 +128,7 @@ class Game:
         return route
 
     def tick(self):
+        if random.randint(1, 100) == 1:
+            self.runners.append(Runner(self))
         for runner in self.runners:
-            runner.to_next_tile()
+            runner.take_a_step()

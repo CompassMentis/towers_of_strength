@@ -13,3 +13,5 @@ class Settings:
 
     tower_bystander_size = 50, 60
     tower_marshall_size = tower_bystander_size
+
+    clock_speed = 30  # 30 frames per second

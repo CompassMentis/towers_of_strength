@@ -6,8 +6,8 @@ import time
 canvas = pygame.display.set_mode((200, 200))
 
 # Test animation
-# sprites = SpriteSheet('images/runners/heroine_animated.png', columns=32, rows=8, colour_key=pygame.Color(127, 127, 127))
-sprites = SpriteSheet('images/runners/hero_animated.png', columns=32, rows=8, colour_key=pygame.Color(127, 127, 127))
+sprites = SpriteSheet('images/runners/heroine_animated.png', columns=32, rows=8, colour_key=pygame.Color(127, 127, 127))
+# sprites = SpriteSheet('images/runners/hero_animated.png', columns=32, rows=8, colour_key=pygame.Color(127, 127, 127))
 
 while True:
     # Direction = 0: Move W
