@@ -4,6 +4,7 @@ from spritesheet import Origin
 
 import utils
 
+
 class Runner:
     def __init__(self, game):
         self.game = game

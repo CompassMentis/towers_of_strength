@@ -30,6 +30,7 @@ def load_tiles():
         'SW/WS': 'tile_cornerRound_S',
         'NW/WN': 'tile_cornerRound_W',
         'SPN': 'tile_endRoundSpawn_E',
+        'SPW': 'tile_endRoundSpawn_N',
         'T': 'tile_E',
         'NS/SN': 'tile_straight_E',
         'EW/WE': 'tile_straight_N',
@@ -47,7 +48,7 @@ def load_tiles():
             # A bit wasteful - we're loading the same image multiple times
             tiles[code] = Tile(code, filename)
 
-    for i in range(1, 4):
+    for i in range(1, 6):
         code = f'X{i}'
         tiles[code] = Tile(code, f'tile_terrain0{i}')
 

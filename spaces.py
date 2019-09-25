@@ -16,7 +16,7 @@ class Space:
 
     @property
     def start_space(self):
-        return self.tile.code == 'SPN'
+        return self.tile.code in ['SPN', 'SPW']
 
     @property
     def end_space(self):

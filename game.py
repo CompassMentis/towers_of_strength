@@ -88,6 +88,7 @@ class Game:
         }[step.exit_side]
         next_x, next_y = step.x + delta[0], step.y + delta[1]
         next_tile = self.spaces[(next_x, next_y)].tile
+        print(next_x, next_y, next_tile)
         assert next_tile.is_path
 
         next_entry_side = {
@@ -125,6 +126,7 @@ class Game:
             route.append(step)
             step = self.find_next_step(step)
 
+        print(route)
         return route
 
     def tick(self):
