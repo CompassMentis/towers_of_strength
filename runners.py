@@ -1,8 +1,61 @@
-import pygame
 import random
+import pygame
 from spritesheet import Origin
 
 import utils
+from settings import Settings
+
+
+class ResourceType:
+    def __init__(self, colour, offset, canvas):
+        self.colour = colour
+        self.offset = offset
+        self.canvas = canvas
+
+    def draw(self, location):
+        pygame.draw.circle(self.canvas, pygame.Color(self.colour),
+                           (int(location[0] + self.offset[0]), int(location[1] + self.offset[1])), 4)
+
+
+class ResourceLevel:
+    def __init__(self, starting_level, resource_type):
+        self.level = starting_level
+        self.resource_type = resource_type
+        self.leaving = False
+        self.leaving_progress = 0
+        self.left = False
+
+    def start_leaving(self):
+        self.leaving = True
+        self.leaving_progress = 0
+
+    def top_up(self, amount):
+        self.leaving_progress = 0
+        self.leaving = False
+        self.level += amount
+
+    def decrease(self):
+        if self.leaving:
+            self.leaving_progress += Settings.leaving_progress_per_step
+            if self.leaving_progress >= Settings.leaving_left:
+                self.left = True
+            return
+        self.level -= Settings.resource_depletion_per_step
+        if self.level <= 0:
+            self.start_leaving()
+
+    def draw(self, location):
+        if not self.critical or self.leaving:
+            return
+        self.resource_type.draw(location)
+
+    @property
+    def critical(self):
+        return self.level <= 2
+
+    @property
+    def depleted(self):
+        return self.level <= 0
 
 
 class Runner:
@@ -12,17 +65,52 @@ class Runner:
 
         self.route = self.game.route[:]
         self.location = None
-        self.happiness = 3
-        self.hydration = 6
-        self.energy = 6
+        self.resource_levels = {
+            colour: ResourceLevel(starting_level, game.resource_types[colour])
+            for colour, starting_level in [
+                ('red', 3),
+                ('blue', 6),
+                ('yellow', 6)
+            ]
+        }
         self.progress_on_tile = 0.5  # Start half way along the first tile
-        self.step_size = 0.03  # Initial speed: 10 steps to cross a tile
+        self.step_size = 0.03 + 0.01 * random.randint(0, 3)
         self.set_location()
         self.direction = 0
+        self.present = True
+
+    def draw_circle(self, offset, colour):
+        pygame.draw.circle(self.game.canvas, pygame.Color(colour),
+                           (int(self.location[0] + offset[0]), int(self.location[1] + offset[1])), 4)
+
+    @property
+    def leaving(self):
+        return any(r.leaving for r in self.resource_levels.values())
+
+    @property
+    def leaving_step(self):
+        return int(max(r.leaving_progress for r in self.resource_levels.values() if r.leaving))
+
+    @property
+    def slow(self):
+        return any(r.critical for r in self.resource_levels.values())
+
+    @property
+    def left(self):
+        return any(r.left for r in self.resource_levels.values())
 
     def draw(self):
-        running_step = int(8 * self.progress_on_tile)
-        self.sprites.blit(self.game.canvas, self.direction * 32 + running_step + 4, position=self.location, origin=Origin.TopLeft)
+        if not self.present:
+            return
+
+        if self.leaving:
+            # Falling 18 - 23
+            running_step = self.leaving_step + 18
+        else:
+            running_step = int(8 * self.progress_on_tile) + 4
+        self.sprites.blit(self.game.canvas, self.direction * 32 + running_step, position=self.location, origin=Origin.TopLeft)
+        for resource_level in self.resource_levels.values():
+            resource_level.draw(self.location)
 
     def offset_and_direction_on_tile(self):
         step = self.route[0]
@@ -66,11 +154,21 @@ class Runner:
         self.direction = direction
 
     def take_a_step(self):
-        self.progress_on_tile += self.step_size
-        if self.progress_on_tile >= 1:
-            self.progress_on_tile -= 1
-            self.to_next_tile()
+        if not self.present:
+            return
+        if not self.leaving:
+            if self.slow:
+                self.progress_on_tile += self.step_size / 2
+            else:
+                self.progress_on_tile += self.step_size
+            if self.progress_on_tile >= 1:
+                self.progress_on_tile -= 1
+                self.to_next_tile()
         self.set_location()
+        for resource_level in self.resource_levels.values():
+            resource_level.decrease()
+        if self.left:
+            self.present = False
 
     @property
     def on_last_tile(self):

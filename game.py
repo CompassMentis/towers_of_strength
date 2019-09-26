@@ -4,7 +4,7 @@ from spritesheet import SpriteSheet
 
 from tiles import load_tiles
 from spaces import create_spaces
-from runners import Runner
+from runners import Runner, ResourceType
 from towers import BystanderTower, MarshallTower
 from steps import Step
 
@@ -28,6 +28,16 @@ class Game:
             )
             for name in ['hero', 'heroine']
         ]
+
+        self.resource_types = {
+            colour: ResourceType(colour, offset, self.canvas)
+            for colour, offset in [
+                ('red', (58, 45)),
+                ('yellow', (60, 40)),
+                ('blue', (62, 43))
+            ]
+        }
+
         self.runners = [Runner(self)]
 
         self.towers = [
@@ -88,7 +98,6 @@ class Game:
         }[step.exit_side]
         next_x, next_y = step.x + delta[0], step.y + delta[1]
         next_tile = self.spaces[(next_x, next_y)].tile
-        print(next_x, next_y, next_tile)
         assert next_tile.is_path
 
         next_entry_side = {
@@ -126,7 +135,6 @@ class Game:
             route.append(step)
             step = self.find_next_step(step)
 
-        print(route)
         return route
 
     def tick(self):

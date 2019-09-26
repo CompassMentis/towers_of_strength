@@ -15,3 +15,7 @@ class Settings:
     tower_marshall_size = tower_bystander_size
 
     clock_speed = 30  # 30 frames per second
+
+    resource_depletion_per_step = 0.01
+    leaving_progress_per_step = 0.1
+    leaving_left = 6

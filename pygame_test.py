@@ -15,11 +15,13 @@ while True:
     # Direction = 2: Move N
     # etc
     for direction in range(8):
-        for i in range(4, 12):
+        # Running: 4 - 11. Stand (with wobble): 0 - 3. Fall to lying flat: 18 - 23. Fall to knees: 18 - 21
+        for i in range(18, 22):
             canvas.fill((255, 255, 255))
             sprites.blit(canvas, direction * 32 + i, position=(50, 50), origin=Origin.TopLeft)
             pygame.display.flip()
             time.sleep(0.2)
+        time.sleep(1)
 
 while True:
     pass
