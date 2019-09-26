@@ -33,5 +33,8 @@ while True:
                 ]:
                     for tower in game.towers:
                         tower.handle_mouse_event(event)
+
                 elif event.type == pygame.USEREVENT:
                     print(event)
+
+                else: pass

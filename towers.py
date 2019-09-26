@@ -3,6 +3,7 @@ import pygame
 from mixins import MouseEventHandlerMixin
 from settings import Settings
 
+from events import TowerEvent
 
 class Tower(MouseEventHandlerMixin):
     def __init__(self, location, game):
@@ -34,20 +35,36 @@ class Tower(MouseEventHandlerMixin):
                     self.location[1] + event.rel[1],
                 )
                 self.game.canvas.blit(self.image, self.location)
-                pygame.event.post(pygame.event.Event(pygame.USEREVENT, {"move": self}))
+                pygame.event.post(pygame.event.Event(
+                    TowerEvent.TOWERMOTION,
+                    {
+                        "location": self.location,
+                    }
+                ))
 
 
     def _handle_mousedown(self, event):
         if self._is_mouse_event_for_me(event):
             self.is_draggable = True
             self.image.set_alpha(100)
+            pygame.event.post(pygame.event.Event(
+                TowerEvent.TOWERDOWN,
+                {
+                    "location": self.location,
+                }
+            ))
 
 
     def _handle_mouseup(self, event):
         self.is_draggable = False
         self.image.set_alpha(255)
         if self._is_mouse_event_for_me(event):
-            pass
+            pygame.event.post(pygame.event.Event(
+                TowerEvent.TOWERUP,
+                {
+                    "location": self.location,
+                }
+            ))
 
 
 class BystanderTower(Tower):
