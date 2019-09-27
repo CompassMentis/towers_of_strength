@@ -5,16 +5,23 @@ from settings import Settings
 
 class Tile:
     def __init__(self, code, filename):
-        self.code = code
+        self._code = code
         self.filename = filename
         self.image = pygame.image.load(f'images/tiles/{filename}.png')
         self.v_offset = Settings.tile_height - self.image.get_rect().height
 
     @property
+    def code(self):
+        if len(self._code) == 3 and self._code[:2] in ['NS', 'SN', 'WE', 'EW']:
+            return self._code[:2]
+
+        return self._code
+
+    @property
     def is_path(self):
-        if self.code == 'BS':
+        if self.code in ['FE', 'FN']:
             return True
-        for x in ['corner', 'straight', 'crossing']:
+        for x in ['corner', 'straight', 'crossing', 'coin']:
             if x in self.filename:
                 return True
         return False
@@ -35,9 +42,13 @@ def load_tiles():
         'NS/SN': 'tile_straight_E',
         'EW/WE': 'tile_straight_N',
         'NESW': 'tile_crossing_E',
+        'NSG/SNG': 'tile_coin_gold_N',
+        'NSS/SNS': 'tile_coin_silver_N',
+        'EWG/WEG': 'tile_coin_gold_E',
+        'EWS/WES': 'tile_coin_silver_E',
 
-        # TODO: Create base/finish tile
-        'BS': 'tile_finish',
+        'FN': 'tile_finish_N',
+        'FE': 'tile_finish_E',
 
         # Empty tile
         'H': 'tile_hole',

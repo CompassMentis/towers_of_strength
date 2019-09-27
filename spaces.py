@@ -20,7 +20,7 @@ class Space:
 
     @property
     def end_space(self):
-        return self.tile.code == 'BS'
+        return self.tile.code in ['FE', 'FN']
 
     @property
     def is_path(self):
