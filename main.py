@@ -4,6 +4,7 @@ import sys
 from settings import Settings
 from game import Game
 
+pygame.init()
 canvas = pygame.display.set_mode((Settings.canvas_width, Settings.canvas_height))
 
 game = Game(canvas)
@@ -31,8 +32,9 @@ while True:
                     pygame.MOUSEBUTTONUP,
                     pygame.MOUSEMOTION,
                 ]:
-                    for tower in game.towers:
-                        tower.handle_mouse_event(event)
+                    pass
+                    # for tower in game.towers:
+                    #     tower.handle_mouse_event(event)
 
                 elif event.type == pygame.USEREVENT:
                     print(event)

@@ -8,6 +8,8 @@ class Tile:
         self._code = code
         self.filename = filename
         self.image = pygame.image.load(f'images/tiles/{filename}.png')
+
+        # TODO: Replace with call to: utils.align_against_bottom(self.menu_location, image) ??
         self.v_offset = Settings.tile_height - self.image.get_rect().height
 
     @property

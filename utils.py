@@ -28,3 +28,10 @@ def location_to_isometric(location):
     # Not sure why, but the factors needed a bit tweaking to match up the tiles correctly
     return x2 * 0.666 + y2 * 0.666 + Settings.tiles_offset_x, \
            x2 * -0.333 + y2 * 0.333 + Settings.tiles_offset_y
+
+
+def align_against_bottom(menu_location, image):
+    return (
+        menu_location[0],
+        menu_location[1] + Settings.tile_height - image.get_rect().height
+    )

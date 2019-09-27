@@ -5,7 +5,8 @@ from spritesheet import SpriteSheet
 from tiles import load_tiles
 from spaces import create_spaces
 from runners import Runner, ResourceType
-from towers import BystanderTower, MarshallTower
+# from towers import BystanderTower, MarshallTower
+from towers import TowerType, Tower
 from steps import Step
 
 
@@ -38,13 +39,24 @@ class Game:
             ]
         }
 
+        self.tower_types = {
+            resource: TowerType(resource, cost, self.canvas)
+            for cost, resource in [
+                (70, 'hydration'),
+                (80, 'nutrition'),
+                (100, 'supporters')
+            ]
+        }
+
+        self.towers = [Tower(tower_type=tower_type, game=self) for tower_type in self.tower_types.values()]
+
         self.runners = [Runner(self)]
 
-        self.towers = [
-            # TODO Tower locations hard-coded - load from file?
-            BystanderTower((1,1), self),
-            MarshallTower((1, 80), self),
-        ]
+        # self.towers = [
+        #     # TODO Tower locations hard-coded - load from file?
+        #     BystanderTower((1,1), self),
+        #     MarshallTower((1, 80), self),
+        # ]
 
     def calculate_grid_size(self):
         max_x, max_y = 0, 0

@@ -19,3 +19,11 @@ class Settings:
     resource_depletion_per_step = 0.01
     leaving_progress_per_step = 0.1
     leaving_left = 6
+
+    menu_tower_locations = {
+        'nutrition': (-2, 6),
+        'hydration': (-2, 3),
+        'supporters': (-2, 4.5)
+    }
+
+    tower_cost_offset = (-2, 1)
