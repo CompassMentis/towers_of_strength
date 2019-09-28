@@ -17,8 +17,8 @@ class TowerType:
             for direction in 'NESW'
         }
         self.font = pygame.font.SysFont('Arial', 32)
-        self.cost_text_active = self.font.render(f'€{self.cost}', True, pygame.Color('yellow'))
-        self.cost_text_inactive = self.font.render(f'€{self.cost}', True, pygame.Color('grey'))
+        self.cost_text_active = self.font.render(f'{self.cost}', True, pygame.Color('yellow'))
+        self.cost_text_inactive = self.font.render(f'{self.cost}', True, pygame.Color('grey'))
         self.image_menu_active = self.images[f'{name}_E']
         self.image_menu_inactive = pygame.image.load(f'images/towers/{name}_E_grey.png')
         self.menu_location = utils.cell_to_isometric(Settings.menu_tower_locations[self.name])

@@ -4,6 +4,7 @@ from spritesheet import Origin
 
 import utils
 from settings import Settings
+from vector import Vector
 
 
 class ResourceType:
@@ -13,8 +14,7 @@ class ResourceType:
         self.canvas = canvas
 
     def draw(self, location):
-        pygame.draw.circle(self.canvas, pygame.Color(self.colour),
-                           (int(location[0] + self.offset[0]), int(location[1] + self.offset[1])), 4)
+        pygame.draw.circle(self.canvas, pygame.Color(self.colour), (location + self.offset).as_int_list, 4)
 
 
 class ResourceLevel:
@@ -61,12 +61,12 @@ class ResourceLevel:
 class Runner:
     def __init__(self, game):
         self.game = game
-        self.sprites = random.choice(game.spritesheets)
+        self.sprites = random.choice(game.components.spritesheets)
 
         self.route = self.game.route[:]
         self.location = None
         self.resource_levels = {
-            colour: ResourceLevel(starting_level, game.resource_types[colour])
+            colour: ResourceLevel(starting_level, game.components.resource_types[colour])
             for colour, starting_level in [
                 ('red', 3),
                 ('blue', 6),
@@ -116,18 +116,19 @@ class Runner:
         step = self.route[0]
 
         side_locations = {
-            'N': (0.5, 0),
-            'E': (1, 0.5),
-            'S': (0.5, 1),
-            'W': (0, 0.5),
-            'C': (0.5, 0.5)
+            'N': Vector(0.5, 0),
+            'E': Vector(1, 0.5),
+            'S': Vector(0.5, 1),
+            'W': Vector(0, 0.5),
+            'C': Vector(0.5, 0.5)
         }
         entry_point = side_locations['C'] if step.entry_side is None else side_locations[step.entry_side]
         exit_point = side_locations['C'] if step.exit_side is None else side_locations[step.exit_side]
 
-        delta = exit_point[0] - entry_point[0], exit_point[1] - entry_point[1]
+        delta = exit_point - entry_point
 
-        offset = entry_point[0] + self.progress_on_tile * delta[0], entry_point[1] + self.progress_on_tile * delta[1]
+        offset = entry_point + delta * self.progress_on_tile
+            # entry_point[0] + self.progress_on_tile * delta[0], entry_point[1] + self.progress_on_tile * delta[1]
 
         delta_x, delta_y = delta
         delta_x = 2 * delta_x if abs(delta_x) == 0.5 else delta_x
@@ -150,7 +151,8 @@ class Runner:
 
     def set_location(self):
         offset, direction = self.offset_and_direction_on_tile()
-        self.location = utils.cell_to_isometric((self.route[0].x + offset[0] + 0.9, self.route[0].y + offset[1] - 2.3))
+        self.location = utils.cell_to_isometric(self.route[0].grid_location + offset + Vector(0.9, -2.3))
+            # (self.route[0].x + offset[0] + 0.9, self.route[0].y + offset[1] - 2.3))
         self.direction = direction
 
     def take_a_step(self):

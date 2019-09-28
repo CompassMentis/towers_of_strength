@@ -27,3 +27,5 @@ class Settings:
     }
 
     tower_cost_offset = (-2, 1)
+
+    image_folder = 'images'

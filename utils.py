@@ -1,4 +1,5 @@
 from settings import Settings
+from vector import Vector
 
 
 def cell_to_isometric(cell):
@@ -18,16 +19,16 @@ def cell_to_isometric(cell):
     y'' = y2/2 - x2/2
     """
 
-    x, y = cell
+    # x, y = cell
 
-    return location_to_isometric((x * Settings.cell_width, y * Settings.cell_height))
+    return location_to_isometric((cell.x * Settings.cell_width, cell.y * Settings.cell_height))
 
 
 def location_to_isometric(location):
     x2, y2 = location
     # Not sure why, but the factors needed a bit tweaking to match up the tiles correctly
-    return x2 * 0.666 + y2 * 0.666 + Settings.tiles_offset_x, \
-           x2 * -0.333 + y2 * 0.333 + Settings.tiles_offset_y
+    return Vector(x2 * 0.666 + y2 * 0.666 + Settings.tiles_offset_x,
+                  x2 * -0.333 + y2 * 0.333 + Settings.tiles_offset_y)
 
 
 def align_against_bottom(menu_location, image):

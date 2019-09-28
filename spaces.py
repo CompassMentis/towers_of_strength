@@ -32,18 +32,3 @@ class Space:
     @property
     def cell(self):
         return self.x, self.y
-
-
-def create_spaces(level, tiles, canvas):
-    # We're reading a csv file, but the format is so simple
-    # that we don't really need python's csv library
-    with open(f'levels/{level}.csv') as input_file:
-        lines = input_file.readlines()
-
-    result = dict()
-
-    for row, line in enumerate(lines):
-        for column, tile_code in enumerate(line.split(',')):
-            tile_code = tile_code.strip()   # Remove EOL character
-            result[(column, row)] = Space(column, row, tiles[tile_code], canvas)
-    return result
