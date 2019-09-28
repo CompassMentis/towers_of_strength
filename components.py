@@ -1,12 +1,10 @@
 import pygame
 
 from abstract_tiles import AbstractStaticTile, AbstractTile, AbstractTowerTile
-# from abstract_tiles import AbstractHydrationTile, AbstractNutritionTile, AbstractSupportersTile
 from tiles import StaticTile, Tile, TowerTile
 from vector import Vector
 from spritesheet import SpriteSheet
 from runners import ResourceType, Runner
-# from towers import TowerType
 
 
 class Components:
@@ -43,24 +41,15 @@ class Components:
         ]
 
         self.resource_types = {
-            colour: ResourceType(colour, offset, self.canvas)
-            for colour, offset in [
-                ('red', Vector(58, 45)),
-                ('yellow', Vector(60, 40)),
-                ('blue', Vector(62, 43))
+            resource_type: ResourceType(resource_type, offset, self.canvas)
+            for resource_type, offset in [
+                ('supporters', Vector(58, 45)),
+                ('nutrition', Vector(60, 40)),
+                ('hydration', Vector(62, 43))
             ]
         }
 
         self.runners = []
-
-        # self.tower_types = {
-        #     resource: TowerType(resource, cost, self.canvas)
-        #     for cost, resource in [
-        #         (70, 'hydration'),
-        #         (80, 'nutrition'),
-        #         (100, 'supporters')
-        #     ]
-        # }
 
         self.all = self.abstract_tiles + self.static_tiles
 
@@ -90,6 +79,7 @@ class Components:
         tower_tile.set_location()
         empty_tile.active = False
         empty_tile.replacement_tile = tower_tile
+        tower_tile.replaces = empty_tile
         self.tower_tiles.append(TowerTile(components=self, abstract_tile=tower_tile.abstract_tile))
         self.game.wealth -= tower_tile.abstract_tile.cost
 
@@ -99,8 +89,6 @@ class Components:
             'O': 'open',
         }
         for code, tile_type in [
-            ['CG', 'coins_gold'],
-            ['CS', 'coins_silver'],
             ['F', 'finish'],
             ['S', 'straight']
         ]:
@@ -116,10 +104,21 @@ class Components:
         for id in range(1, 6):
             sources[f'T_0{id}'] = f'terrain_0{id}'
 
-        return {
+        result = {
             code: AbstractStaticTile(code, filename)
             for code, filename in sources.items()
         }
+
+        for short_code, tile_type in [
+            ['CG', 'coins_gold'],
+            ['CS', 'coins_silver'],
+        ]:
+            for orientation in ['NS', 'EW']:
+                code = f'{short_code}_{orientation}'
+                filename = f'{tile_type}_{orientation}'
+                result[code] = AbstractStaticTile(code, filename, True)
+
+        return result
 
     def load_terrain(self, level, canvas):
         # We're reading a csv file, but the format is so simple
@@ -155,7 +154,8 @@ class Components:
             AbstractStaticTile: list(self.abstract_static_tiles.values()),
             AbstractTile: self.abstract_tiles,
             StaticTile: self.static_tiles,
-            Tile: self.tiles
+            Tile: self.tiles,
+            TowerTile: self.tower_tiles,
         }[type]
 
         if grid_location:
@@ -196,4 +196,5 @@ class Components:
                 tower_tile.draw()
 
         for runner in self.runners:
-            runner.draw()
+            if runner.present:
+                runner.draw()

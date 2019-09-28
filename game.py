@@ -1,10 +1,10 @@
 import pygame
 import random
+import datetime
+import time
 
-from tiles import StaticTile
+from tiles import StaticTile, TowerTile
 from settings import Settings
-# from towers import BystanderTower, MarshallTower
-# from towers import TowerType, Tower
 from steps import Step
 import utils
 
@@ -17,21 +17,44 @@ class Game:
     def __init__(self, canvas):
 
         self.canvas = canvas
-        self.components = Components(self, 'level01')
+        self.font = pygame.font.SysFont('Arial', 48)
+
+        self.components = None
+        self.route = None
+        self.wealth = 100
+        self.score = 0
+        self.start_time = None
+        self.level_name = ''
+
+        self.levels = ['level01', 'level02', 'level03']
+        self.start_level(self.levels[0])
+
+    def next_level(self):
+        del self.levels[0]
+        self.start_level(self.levels[0])
+
+    def score_point(self):
+        self.score += 1
+        if self.score >= Settings.target_score:
+            self.draw()
+            time.sleep(2)
+            self.next_level()
+
+    def start_level(self, level):
+        self.components = Components(self, level)
 
         self.route = self.calculate_route()
         self.components.new_runner(self)
+        self.level_name = f'Level {level[5:]}'
         self.wealth = 100
-        self.font = pygame.font.SysFont('Arial', 48)
+        self.score = 0
+        self.start_time = datetime.datetime.now()
 
-        # self.towers = [Tower(tower_type=tower_type, game=self) for tower_type in self.tower_types.values()]
-        #
-
-        # self.towers = [
-        #     # TODO Tower locations hard-coded - load from file?
-        #     BystanderTower((1,1), self),
-        #     MarshallTower((1, 80), self),
-        # ]
+    @property
+    def time(self):
+        duration = datetime.datetime.now() - self.start_time
+        minutes, seconds = divmod(duration.seconds, 60)
+        return f'{minutes}:{seconds:02}'
 
     @property
     def runners(self):
@@ -46,6 +69,25 @@ class Game:
             utils.cell_to_isometric(Settings.wealth_location).as_int_list
         )
 
+    def show_score(self):
+        self.canvas.blit(
+            self.font.render(f'{self.score}/{Settings.target_score}', True, pygame.Color('white')),
+            utils.cell_to_isometric(Settings.score_location).as_int_list
+        )
+
+    def show_time(self):
+        time = self.time
+        self.canvas.blit(
+            self.font.render(time, True, pygame.Color('white')),
+            utils.cell_to_isometric(Settings.time_location).as_int_list
+        )
+
+    def show_level_name(self):
+        self.canvas.blit(
+            self.font.render(self.level_name, True, pygame.Color('white')),
+            utils.cell_to_isometric(Settings.level_name_location).as_int_list
+        )
+
     def draw(self):
         # TODO: Create background image
         self.canvas.fill((0, 0, 0))
@@ -53,10 +95,10 @@ class Game:
         self.components.draw()
 
         self.show_wealth()
+        self.show_score()
+        self.show_time()
+        self.show_level_name()
 
-        # for tower in self.towers:
-        #     tower.draw()
-        #
         pygame.display.flip()
 
     def find_start_tile(self):
@@ -85,9 +127,7 @@ class Game:
             'N': Vector(0, -1)
         }[step.exit_side]
         next_location = step.grid_location + delta
-        # next_x, next_y = step.x + delta[0], step.y + delta[1]
         next_tile = self.components.filter(type=StaticTile, grid_location=next_location)[0]
-        # next_tile = self.spaces[(next_x, next_y)].tile
         assert next_tile.is_path
 
         next_entry_side = {
@@ -132,3 +172,5 @@ class Game:
             self.components.new_runner(self)
         for runner in self.runners:
             runner.take_a_step()
+        for tile in self.components.filter(type=TowerTile):
+            tile.support_runners()

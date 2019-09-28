@@ -14,11 +14,9 @@ class Settings:
     tile_height = 56
     tile_width = 91
 
-    tower_bystander_size = 50, 60
-    tower_marshall_size = tower_bystander_size
-
     clock_speed = 30  # 30 frames per second
 
+    resource_increase_by_tower = 3
     resource_depletion_per_step = 0.01
     leaving_progress_per_step = 0.1
     leaving_left = 6
@@ -40,3 +38,14 @@ class Settings:
     image_folder = 'images'
 
     wealth_location = Vector(-5, 5)
+
+    gold_value = 10
+    silver_value = 5
+    sparkle_duration = 20
+
+    score_location = Vector(5, 16)
+    time_location = Vector(3, 18)
+
+    target_score = 15
+
+    level_name_location = Vector(16, 3)

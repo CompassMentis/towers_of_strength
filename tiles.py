@@ -1,6 +1,8 @@
 import utils
 from mixins import MouseEventHandlerMixin
 from vector import Vector
+from settings import Settings
+from flutter import Flutter
 
 
 class Tile:
@@ -33,6 +35,14 @@ class Tile:
     def image(self):
         return self.abstract_tile.image
 
+    @property
+    def value(self):
+        return self.abstract_tile.value
+
+    @property
+    def is_coins(self):
+        return self.abstract_tile.is_coins
+
     def set_location(self):
         self.location = utils.cell_to_isometric(self.grid_location) + self.abstract_tile.offset
 
@@ -45,19 +55,23 @@ class StaticTile(Tile):
         self.set_location()
         self.canvas = canvas
         self.replacement_tile = None
+        self.sparkle_countdown = 0
 
     @property
     def is_empty(self):
         return self.abstract_tile.is_empty and self.replacement_tile is None
 
     def draw(self):
-        self.canvas.blit(self.abstract_tile.image, self.location.as_list)
+        if self.sparkle_countdown:
+            self.canvas.blit(self.abstract_tile.spark_image, self.location.as_list)
+        else:
+            self.canvas.blit(self.abstract_tile.image, self.location.as_list)
 
     def __repr__(self):
         return f'<StaticTile>(abstract_tile={self.abstract_tile}, grid_location={self.grid_location})'
 
 
-class TowerTile(Tile, MouseEventHandlerMixin):  # MouseEventHandlerMixin):
+class TowerTile(Tile, MouseEventHandlerMixin):
     def __init__(self, components, abstract_tile):
         Tile.__init__(self)
         self.abstract_tile = abstract_tile
@@ -67,6 +81,23 @@ class TowerTile(Tile, MouseEventHandlerMixin):  # MouseEventHandlerMixin):
         self.is_draggable = False
         self.location = self.abstract_tile.menu_location
         self.orientation = None
+        self.supported = set()
+        self.replaces = None
+
+    def support_one_runner(self, runner):
+        increase = runner.resource_levels[self.abstract_tile.type].top_up(Settings.resource_increase_by_tower)
+        for i in range(int(increase)):
+            runner.flutters.append(Flutter(self.abstract_tile.image_heart))
+        self.supported.add(runner)
+
+    def support_runners(self):
+        if self.state == 'menu':
+            return
+
+        for runner in self.components.runners:
+            if runner not in self.supported:
+                if utils.next_door(runner.route[0].tile.grid_location, self.replaces.grid_location):
+                    self.support_one_runner(runner)
 
     @property
     def is_active(self):

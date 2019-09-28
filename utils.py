@@ -18,9 +18,6 @@ def cell_to_isometric(cell):
     x'' = x2/2 - y2/2
     y'' = y2/2 - x2/2
     """
-
-    # x, y = cell
-
     return location_to_isometric((cell.x * Settings.cell_width, cell.y * Settings.cell_height))
 
 
@@ -36,3 +33,7 @@ def align_against_bottom(menu_location, image):
         menu_location[0],
         menu_location[1] + Settings.tile_height - image.get_rect().height
     )
+
+
+def next_door(grid_location_1, grid_location_2):
+    return abs(grid_location_1 - grid_location_2) in [Vector(0, 1), Vector(1, 0)]

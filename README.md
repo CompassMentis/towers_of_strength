@@ -8,31 +8,14 @@ Towers of Strength game for PyWeek 28
 * Activate the virtual environment
 * pip install - requirements.txt
 * python main.py
-* Currently the close button doesn't work. Instead use ^C
 
-# Progress
-* Level loaded from csv file
-* Tiles shown
+# Status
+* All functionality works
 
-# In progress - core functionality
-* Find images (isometric) of 'towers': bystanders, marshalls, etc
-    - e.g. from https://kenney.nl/assets
-* Drag and drop towers
-    - Note: allow for multiple types of towers
-    - Click on tower, start dragging
-    - Show new position of the tower
-    - When centre of tower base (roughly calculated/hand coded) is above a tile, highlight the tile (e.g. by drawing a rotated square around it)
-    - When releasing tower, place on current tile
-    - Drawing code to show placed towers
-* Get towers to do something useful
-    - If a runner nearby, 'help' it
-        - Supporter: increase happiness (up to 10)
-        - Water stand: increase hydration (up to 10)
-        - Food stand: increase food (up to 10)
-
-# Improvements
-* Improve tower-effects
-    - Handle multiple runners
-        - Work out which runners are next to which towers
-        - Try to get each tower to serve a runner (could be an interesting algorithm)
- 
+# Instructions
+* Place supporters (red), food stations (yellow) and water stations (blue)
+* When runners cross some coins, you will earn some extra money
+* With lots of encouragement runners will speed up - but use more resources
+* Get at least 15 runners over the finish line 
+* There are currently 3 levels
+* Once all levels are done, the game just crashes (to be completed)

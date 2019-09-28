@@ -12,10 +12,13 @@ class AbstractTile:
 class AbstractStaticTile(AbstractTile):
     IMAGE_FOLDER = 'static_tiles'
 
-    def __init__(self, code, filename):
+    def __init__(self, code, filename, with_sparkle=False):
         self.code = code
         self.filename = filename
         self.image = pygame.image.load(f'{Settings.image_folder}/{self.IMAGE_FOLDER}/{filename}.png')
+
+        if with_sparkle:
+            self.spark_image = pygame.image.load(f'{Settings.image_folder}/{self.IMAGE_FOLDER}/{filename}_sparkle.png')
 
         self.offset = Vector(0, Settings.tile_height - self.image.get_rect().height)
 
@@ -30,6 +33,20 @@ class AbstractStaticTile(AbstractTile):
     @property
     def is_path(self):
         return self.code_type in ['CG', 'CS', 'C', 'F', 'S', 'L']
+
+    @property
+    def is_coins(self):
+        return self.code_type in ['CG', 'CS']
+
+    @property
+    def value(self):
+        if self.code_type == 'CG':
+            return Settings.gold_value
+
+        if self.code_type == 'CS':
+            return Settings.silver_value
+
+        return 0
 
     def __repr__(self):
         return f'<Tile>(code={self.code}, filename={self.IMAGE_FOLDER}/{self.filename})'
@@ -62,6 +79,7 @@ class AbstractTowerTile:
         self.cost_text_inactive = self.font.render(f'({self.cost})', True, pygame.Color('grey'))
         self.image_menu_active = pygame.image.load(f'images/tower_tiles/{type}_menu.png')
         self.image_menu_inactive = pygame.image.load(f'images/tower_tiles/{type}_menu_grey.png')
+        self.image_heart = pygame.image.load(f'images/misc/heart_{type}.png')
 
         self.menu_location = utils.cell_to_isometric(Settings.menu_tower_locations[type]) + \
             Vector(0, Settings.tile_height - self.image_menu_active.get_rect().height)
