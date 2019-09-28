@@ -1,4 +1,3 @@
-from settings import Settings
 import utils
 
 
@@ -8,7 +7,6 @@ class Space:
         self.y = y
         self.tile = tile
         self.canvas = canvas
-        # self.location = self.calculate_location()
         self.location = utils.cell_to_isometric((x, y))
 
     def __repr__(self):
