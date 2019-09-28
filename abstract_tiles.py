@@ -2,6 +2,7 @@ import pygame
 
 from settings import Settings
 from vector import Vector
+import utils
 
 
 class AbstractTile:
@@ -40,3 +41,33 @@ class AbstractStaticTile(AbstractTile):
     @property
     def is_end(self):
         return self.code_type == 'F'
+
+    @property
+    def is_empty(self):
+        return self.code_type == 'O'
+
+
+class AbstractTowerTile:
+    def __init__(self, type):
+        self.type = type
+        self.cost = Settings.tower_costs[type]
+
+        self.images = {
+            f'{direction}': pygame.image.load(f'images/tower_tiles/{type}_{direction}.png')
+            for direction in 'NESW'
+        }
+
+        self.font = pygame.font.SysFont('Arial', 24)
+        self.cost_text_active = self.font.render(f'({self.cost})', True, pygame.Color('yellow'))
+        self.cost_text_inactive = self.font.render(f'({self.cost})', True, pygame.Color('grey'))
+        self.image_menu_active = pygame.image.load(f'images/tower_tiles/{type}_menu.png')
+        self.image_menu_inactive = pygame.image.load(f'images/tower_tiles/{type}_menu_grey.png')
+
+        self.menu_location = utils.cell_to_isometric(Settings.menu_tower_locations[type]) + \
+            Vector(0, Settings.tile_height - self.image_menu_active.get_rect().height)
+
+        self.cost_location = utils.cell_to_isometric(
+            Settings.menu_tower_locations[type] + Settings.tower_cost_offset
+        )
+
+        self.offset = Vector(0, Settings.tile_height - self.images['E'].get_rect().height)

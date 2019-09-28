@@ -4,8 +4,11 @@ from pygame import (
     MOUSEMOTION,
 )
 
+
 class MouseEventHandlerMixin:
-    "Base class/Interface for handling mouse-events."
+    """
+    Base class/Interface for handling mouse-events.
+    """
     def _handle_mousedown(self, event):
         raise NotImplementedError
 

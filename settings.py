@@ -1,3 +1,6 @@
+from vector import Vector
+
+
 class Settings:
     cell_width = 63
     cell_height = 63
@@ -21,11 +24,19 @@ class Settings:
     leaving_left = 6
 
     menu_tower_locations = {
-        'nutrition': (-2, 6),
-        'hydration': (-2, 3),
-        'supporters': (-2, 4.5)
+        'nutrition': Vector(-1.5, 6),
+        'hydration': Vector(-1.5, 3),
+        'supporters': Vector(-1.5, 4.5)
     }
 
-    tower_cost_offset = (-2, 1)
+    tower_costs = {
+        'nutrition': 50,
+        'hydration': 40,
+        'supporters': 60
+    }
+
+    tower_cost_offset = Vector(-1.5, 0.5)
 
     image_folder = 'images'
+
+    wealth_location = Vector(-5, 5)

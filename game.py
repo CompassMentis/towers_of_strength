@@ -2,9 +2,11 @@ import pygame
 import random
 
 from tiles import StaticTile
+from settings import Settings
 # from towers import BystanderTower, MarshallTower
 # from towers import TowerType, Tower
 from steps import Step
+import utils
 
 
 from components import Components
@@ -15,10 +17,13 @@ class Game:
     def __init__(self, canvas):
 
         self.canvas = canvas
-        self.components = Components(canvas, 'level01')
+        self.components = Components(self, 'level01')
 
         self.route = self.calculate_route()
         self.components.new_runner(self)
+        self.wealth = 100
+        self.font = pygame.font.SysFont('Arial', 48)
+
         # self.towers = [Tower(tower_type=tower_type, game=self) for tower_type in self.tower_types.values()]
         #
 
@@ -32,19 +37,23 @@ class Game:
     def runners(self):
         return self.components.runners
 
+    def handle_mouse_event(self, event):
+        self.components.handle_mouse_event(event)
+
+    def show_wealth(self):
+        self.canvas.blit(
+            self.font.render(f'{self.wealth}', True, pygame.Color('yellow')),
+            utils.cell_to_isometric(Settings.wealth_location).as_int_list
+        )
+
     def draw(self):
         # TODO: Create background image
         self.canvas.fill((0, 0, 0))
 
-        for static_tile in sorted(
-            self.components.filter(type=StaticTile),
-            key=lambda tile: (-tile.grid_location.x, tile.grid_location.y)
-        ):
-            static_tile.draw()
+        self.components.draw()
 
-        for runner in self.components.runners:
-            runner.draw()
-        #
+        self.show_wealth()
+
         # for tower in self.towers:
         #     tower.draw()
         #
